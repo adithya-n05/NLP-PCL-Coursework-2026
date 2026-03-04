@@ -12,8 +12,6 @@ This repository contains the full submission for COMP60035 Natural Language Proc
 ### Core submission outputs
 - Dev predictions (root): [dev.txt](dev.txt)
 - Test predictions (root): [test.txt](test.txt)
-- Dev predictions (BestModel copy): [BestModel/dev.txt](BestModel/dev.txt)
-- Test predictions (BestModel copy): [BestModel/test.txt](BestModel/test.txt)
 
 ### Best model implementation
 - Best model training code: [BestModel/best_model_train.py](BestModel/best_model_train.py)
