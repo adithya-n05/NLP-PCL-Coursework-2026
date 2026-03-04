@@ -1,5 +1,10 @@
 # COMP60035 NLP Coursework (PCL Detection)
 
+Simple overview:
+- This repository is my full COMP60035 coursework submission for binary Patronising and Condescending Language (PCL) detection.
+- The key assessment files are at the root (`dev.txt`, `test.txt`), in `BestModel/` (final training code + model weights), and in `report/` (final PDF report).
+- The sections below give direct clickable links so markers can quickly open the exact files used for the final submission and results.
+
 This repository contains the full submission for COMP60035 Natural Language Processing coursework (SemEval-2022 Task 4, Subtask 1: binary PCL detection).
 
 ## Quick Marker Navigation
@@ -15,6 +20,9 @@ This repository contains the full submission for COMP60035 Natural Language Proc
 - Training/run summary used for final metrics table: [.bestmodel_runs_ensemble/summary.json](.bestmodel_runs_ensemble/summary.json)
 
 ### Best model weights (selected ensemble members)
+The final system is a weighted ensemble, not a single checkpoint: we trained RoBERTa and DeBERTa across multiple seeds, then selected the strongest runs by validation F1.  
+These linked weight files are the exact selected members whose probabilities were combined and threshold-tuned to produce the final `dev.txt`/`test.txt`.
+
 - DeBERTa-v3 (seed 1337): [BestModel/model_weights/microsoft_deberta-v3-base__seed_1337/model.safetensors](BestModel/model_weights/microsoft_deberta-v3-base__seed_1337/model.safetensors)
 - DeBERTa-v3 (seed 627345): [BestModel/model_weights/microsoft_deberta-v3-base__seed_627345/model.safetensors](BestModel/model_weights/microsoft_deberta-v3-base__seed_627345/model.safetensors)
 - DeBERTa-v3 (seed 42): [BestModel/model_weights/microsoft_deberta-v3-base__seed_42/model.safetensors](BestModel/model_weights/microsoft_deberta-v3-base__seed_42/model.safetensors)
@@ -32,9 +40,11 @@ This repository contains the full submission for COMP60035 Natural Language Proc
   - Sample false negatives: [evaluation/dev_error_samples_fn.csv](evaluation/dev_error_samples_fn.csv)
   - Sample false positives: [evaluation/dev_error_samples_fp.csv](evaluation/dev_error_samples_fp.csv)
 
-### Report and source
+### Spec, report, and notes
+- Coursework spec: [literature/60035_1_spec.pdf](literature/60035_1_spec.pdf)
 - Coursework report (PDF): [report/Adithya_Narayanan_NLP_Coursework_2026.pdf](report/Adithya_Narayanan_NLP_Coursework_2026.pdf)
 - Coursework report source (LaTeX): [report/Adithya Narayanan, Natural Language Processing Coursework, 2026.tex](<report/Adithya Narayanan, Natural Language Processing Coursework, 2026.tex>)
+- Coursework notes log: [.notes.md](.notes.md)
 
 ## Repository Structure (Tree)
 
