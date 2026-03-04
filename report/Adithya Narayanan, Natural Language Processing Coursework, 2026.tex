@@ -212,7 +212,7 @@ Ranked from biggest to smallest weakness:
 \newpage
 \section{Exploratory Data Analysis (EDA, 6 marks):}
 \subsection{Analyse the PCL dataset using 2 distinct EDA techniques (3 marks each):}
-For marking clarity, I report exactly two techniques in the required format (Visual/Tabular Evidence, Analysis, Impact Statement). I have included both a table and figure for each technique to allow for easier analysis of the EDA techniques chosen.
+For marking clarity, we report exactly two techniques in the required format (Visual/Tabular Evidence, Analysis, Impact Statement). We have included both a table and figure for each technique to allow for easier analysis of the EDA techniques chosen.
 
 \subsubsection{Technique 1: Class Distribution (Binary Imbalance Audit)}
 \textbf{Visual/Tabular Evidence:}
@@ -273,7 +273,7 @@ This EDA directly informs the modelling strategy. First, model selection and rep
 Sequence lengths are stable across train/dev at the distribution level (means around 42--44 and medians around 37--38), so the split appears structurally consistent. However, there is a long right tail (train max 821; p99 around 128), which makes truncation a non-trivial design decision. Positives are systematically longer than negatives in train (mean 47.97 vs 43.06; p95 103 vs 91), indicating that aggressive truncation risks discarding informative positive-class context.
 
 \textbf{Impact Statement:}
-This EDA shapes both architecture settings and training protocol. I should treat \texttt{max\_length} as a tuned hyperparameter (rather than a default), selecting a value that retains most positive evidence while keeping compute feasible (e.g., around the high-percentile range with ablation checks). It also motivates outlier-aware error analysis, since very long paragraphs can drive false negatives after truncation. Together with Technique 1, this supports a novel yet defensible approach: imbalance-aware training plus calibrated decision thresholds under an explicitly justified sequence-length policy.
+This EDA shapes both architecture settings and training protocol. We should treat \texttt{max\_length} as a tuned hyperparameter (rather than a default), selecting a value that retains most positive evidence while keeping compute feasible (e.g., around the high-percentile range with ablation checks). It also motivates outlier-aware error analysis, since very long paragraphs can drive false negatives after truncation. Together with Technique 1, this supports a novel yet defensible approach: imbalance-aware training plus calibrated decision thresholds under an explicitly justified sequence-length policy.
 
 \newpage
 \section{Describe your proposed approach (4 marks):}
@@ -360,7 +360,7 @@ The final outputs are placed at the repository root. \texttt{dev.txt} has 2094 l
 \subsection{Local Evaluation (5 marks):}
 \subsubsection{Error Analysis (2.5 marks):}
 \textbf{Evaluation setup:}
-For local error analysis, we inspected the final ensemble predictions on the official dev split (2094 examples) against the official reference labels from \texttt{dev\_semeval\_parids-labels.csv}. We map the 7-category label vectors to the binary Task 1 target by assigning PCL \(=1\) if \emph{any} category is present, which matches the official dev evaluation setup. This follows the coursework guidance for local evaluation and keeps analysis aligned with the official metric (positive-class F1).
+For local error analysis, we inspected the final ensemble predictions on the official dev split (2094 examples) against the official binary Task 1 labels from \texttt{dev\_semeval\_parids-labels.csv} (1 = PCL, 0 = No PCL). This follows the coursework guidance for local evaluation and keeps analysis aligned with the official metric (positive-class F1).
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.4\linewidth]{figures/error_confusion_matrix_dev.png}
