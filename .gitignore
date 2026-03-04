@@ -1,0 +1,6 @@
+.notes.md
+resources/*
+lecture\ slides/*
+.venv/*
+__pycache__/
+*.py[cod]
