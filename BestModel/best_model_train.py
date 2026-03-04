@@ -34,7 +34,6 @@ MODEL_NAMES = ["roberta-base", "microsoft/deberta-v3-base"]
 SEEDS = [42, 1337, 627345]
 TOP_K = 4
 ENSEMBLE_WEIGHTING = "val_f1"  # "val_f1" or "uniform"
-LOCAL_TEST_LABELS_FILE = Path("resources/PCL_testlabels_binary.txt")  # Set to None to disable
 
 MAX_LENGTH = 256
 NUM_TRAIN_EPOCHS = 4
@@ -135,18 +134,6 @@ def clean_text(text):
 def read_split_labels(split_df):
     label_vec = split_df["label"].apply(ast.literal_eval)
     return label_vec.apply(lambda x: int(any(x))).to_numpy(dtype=np.int64)
-
-
-def read_binary_labels(path):
-    values = []
-    for i, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-        s = raw.strip()
-        if not s:
-            continue
-        if s not in {"0", "1"}:
-            raise ValueError(f"Non-binary label at line {i}: {s!r}")
-        values.append(int(s))
-    return np.array(values, dtype=np.int64)
 
 
 def load_data():
@@ -410,15 +397,6 @@ def main():
 
     train_df, dev_df, test_df = load_data()
     y_dev = dev_df["label_bin"].to_numpy(dtype=np.int64)
-    y_test = None
-    if LOCAL_TEST_LABELS_FILE is not None:
-        labels_path = Path(LOCAL_TEST_LABELS_FILE)
-        y_test = read_binary_labels(labels_path)
-        if len(y_test) != len(test_df):
-            raise ValueError(
-                f"Local test labels mismatch: got {len(y_test)} expected {len(test_df)}"
-            )
-        print(f"Local test eval enabled with labels: {labels_path}")
 
     print(f"Loaded: train={len(train_df)} dev={len(dev_df)} test={len(test_df)}")
     print(f"Models: {MODEL_NAMES}")
@@ -447,10 +425,6 @@ def main():
             tuned_threshold, val_metrics = find_best_threshold(y_val, probs["val"])
             dev_pred = (probs["dev"] >= tuned_threshold).astype(np.int64)
             dev_metrics = evaluate_binary(y_dev, dev_pred)
-            local_test_metrics = None
-            if y_test is not None:
-                test_pred = (probs["test"] >= tuned_threshold).astype(np.int64)
-                local_test_metrics = evaluate_binary(y_test, test_pred)
 
             scout_runs.append(
                 {
@@ -459,7 +433,6 @@ def main():
                     "tuned_threshold": tuned_threshold,
                     "val_metrics": val_metrics,
                     "dev_metrics": dev_metrics,
-                    "local_test_metrics": local_test_metrics,
                     "val_probs": probs["val"],
                     "dev_probs": probs["dev"],
                     "test_probs": probs["test"],
@@ -471,8 +444,6 @@ def main():
                 f"val_f1={val_metrics['f1_pos']:.4f} dev_f1={dev_metrics['f1_pos']:.4f} "
                 f"thr={tuned_threshold:.3f}"
             )
-            if local_test_metrics is not None:
-                scout_line += f" local_test_f1={local_test_metrics['f1_pos']:.4f}"
             print(scout_line)
 
     scout_runs = sorted(scout_runs, key=lambda r: r["val_metrics"]["f1_pos"], reverse=True)
@@ -497,12 +468,6 @@ def main():
         f"[SCOUT ENSEMBLE] val_f1={scout_val_metrics['f1_pos']:.4f} "
         f"dev_f1={scout_dev_metrics['f1_pos']:.4f} thr={selection_threshold:.3f}"
     )
-    if y_test is not None:
-        scout_test_pred = (scout_test_probs >= selection_threshold).astype(np.int64)
-        scout_local_test_metrics = evaluate_binary(y_test, scout_test_pred)
-        scout_ensemble_line += f" local_test_f1={scout_local_test_metrics['f1_pos']:.4f}"
-    else:
-        scout_local_test_metrics = None
     print(scout_ensemble_line)
 
     final_runs = []
@@ -523,10 +488,6 @@ def main():
 
         dev_pred = (probs["dev"] >= selection_threshold).astype(np.int64)
         dev_metrics = evaluate_binary(y_dev, dev_pred)
-        local_test_metrics = None
-        if y_test is not None:
-            test_pred = (probs["test"] >= selection_threshold).astype(np.int64)
-            local_test_metrics = evaluate_binary(y_test, test_pred)
 
         final_runs.append(
             {
@@ -534,7 +495,6 @@ def main():
                 "seed": run["seed"],
                 "weight": weight,
                 "dev_metrics": dev_metrics,
-                "local_test_metrics": local_test_metrics,
                 "dev_probs": probs["dev"],
                 "test_probs": probs["test"],
                 "run_dir": run_dir,
@@ -545,8 +505,6 @@ def main():
             f"[FINAL DONE] model={run['model_name']} seed={run['seed']} "
             f"dev_f1={dev_metrics['f1_pos']:.4f} thr={selection_threshold:.3f}"
         )
-        if local_test_metrics is not None:
-            final_done_line += f" local_test_f1={local_test_metrics['f1_pos']:.4f}"
         print(final_done_line)
 
     final_weights = normalize_weights([r["weight"] for r in final_runs])
@@ -559,17 +517,12 @@ def main():
     final_threshold, final_dev_metrics = find_best_threshold(y_dev, final_dev_probs)
     final_dev_pred = (final_dev_probs >= final_threshold).astype(np.int64)
     final_test_pred = (final_test_probs >= final_threshold).astype(np.int64)
-    final_local_test_metrics = None
-    if y_test is not None:
-        final_local_test_metrics = evaluate_binary(y_test, final_test_pred)
 
     final_line = (
         f"[FINAL ENSEMBLE] selection_thr={selection_threshold:.3f} "
         f"dev_f1@selection={final_dev_metrics_at_selection['f1_pos']:.4f} "
         f"final_thr={final_threshold:.3f} dev_f1@final={final_dev_metrics['f1_pos']:.4f}"
     )
-    if final_local_test_metrics is not None:
-        final_line += f" local_test_f1={final_local_test_metrics['f1_pos']:.4f}"
     print(final_line)
 
     dev_path = OUTPUT_DIR / "dev.txt"
@@ -641,19 +594,6 @@ def main():
         },
         "moved_model_weights": moved_models,
     }
-    if final_local_test_metrics is not None:
-        summary["scout_ensemble_metrics"]["local_test"] = scout_local_test_metrics
-        for run in summary["scout_selected_runs"]:
-            for original in selected:
-                if run["model_name"] == original["model_name"] and run["seed"] == int(original["seed"]):
-                    run["local_test_metrics"] = original["local_test_metrics"]
-                    break
-        for run in summary["final_seed_runs"]:
-            for original in final_runs:
-                if run["model_name"] == original["model_name"] and run["seed"] == int(original["seed"]):
-                    run["local_test_metrics"] = original["local_test_metrics"]
-                    break
-        summary["final_ensemble_metrics"]["local_test"] = final_local_test_metrics
 
     SUMMARY_JSON.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
@@ -667,8 +607,6 @@ def main():
         "test_txt": str(test_path),
         "weights_dir": str(MODEL_WEIGHTS_DIR),
     }
-    if final_local_test_metrics is not None:
-        final_report["final_local_test_f1_pos"] = float(final_local_test_metrics["f1_pos"])
     print(json.dumps(final_report, indent=2))
 
 

@@ -196,9 +196,9 @@ def plot_confusion_matrix(cm: np.ndarray, out_path: Path):
     plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
 
     ax.set_xticks([0, 1], labels=["Pred 0 (No PCL)", "Pred 1 (PCL)"])
-    ax.set_yticks([0, 1], labels=["Gold 0 (No PCL)", "Gold 1 (PCL)"])
+    ax.set_yticks([0, 1], labels=["Ref 0 (No PCL)", "Ref 1 (PCL)"])
     ax.set_xlabel("Predicted label")
-    ax.set_ylabel("True label")
+    ax.set_ylabel("Reference label")
     ax.set_title("Final Ensemble Confusion Matrix on Dev")
 
     for i in range(2):
@@ -357,4 +357,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

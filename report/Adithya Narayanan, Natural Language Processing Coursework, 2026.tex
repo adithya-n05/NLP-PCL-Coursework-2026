@@ -166,7 +166,7 @@
 \tableofcontents
 \setcounter{page}{1}
 \newpage
-\section{Critical Paper Review:}
+\section{Critical Paper Review (6 marks):}
 \subsection{State the primary contributions of this work (2 marks):}
 This paper makes four core contributions to NLP research on Patronizing and Condescending Language (PCL):
 
@@ -327,7 +327,7 @@ The changes in Section 3.1 were made to address concrete weaknesses we observed 
 \newpage
 
 \setcounter{section}{4}
-\section{Evaluation and Error Analysis:}
+\section{Evaluation and Error Analysis (11 marks):}
 \subsection{Global Evaluation (6 marks):}
 
 \textbf{Final system summary:}
@@ -361,25 +361,71 @@ The final outputs are placed at the repository root. \texttt{dev.txt} has 2094 l
 \subsection{Local Evaluation (5 marks):}
 \subsubsection{Error Analysis (2.5 marks):}
 \textbf{Evaluation setup:}
-For local error analysis, we inspected the final ensemble predictions on the official dev split (2094 examples) against the gold labels from \texttt{dev\_semeval\_parids-labels.csv}. This follows the coursework guidance for local evaluation and keeps analysis aligned with the official metric (positive-class F1).
+For local error analysis, we inspected the final ensemble predictions on the official dev split (2094 examples) against the official reference labels from \texttt{dev\_semeval\_parids-labels.csv}. This follows the coursework guidance for local evaluation and keeps analysis aligned with the official metric (positive-class F1).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.52\linewidth]{figures/error_confusion_matrix_dev.png}
+  \caption{Confusion matrix on official dev (evaluated against official reference labels) for the final retuned ensemble at threshold \(=0.25\).}
+  \label{fig:error_confusion_dev}
+\end{figure}
+
+\textbf{Interpretation of Figure \ref{fig:error_confusion_dev}:}
+The final ensemble correctly classifies \(1939/2094\) examples (\(92.60\%\) accuracy), with \(1805\) true negatives and \(134\) true positives. The dominant remaining error is missed positives (\(65\) false negatives) compared with \(90\) false positives, which is why recall is improved but still not saturated.
 
 \begin{table}[H]
   \centering
-  \small
-  \begin{tabular}{lcc}
+  \scriptsize
+  \begin{tabularx}{\linewidth}{l c >{\raggedright\arraybackslash}X}
     \toprule
-    Gold label $\backslash$ Predicted label & 0 (No PCL) & 1 (PCL) \\
+    Metric & Value & Interpretation \\
     \midrule
-    0 (No PCL) & 1805 & 90 \\
-    1 (PCL) & 65 & 134 \\
+    Threshold & 0.2500 & Final decision cutoff used for ensemble probabilities on dev. \\
+    TN & 1805 & Correctly rejected No-PCL examples (strong negative control). \\
+    FP & 90 & Non-PCL examples incorrectly flagged as PCL (over-triggering). \\
+    FN & 65 & PCL examples missed by the model (main residual failure mode). \\
+    TP & 134 & PCL examples correctly identified. \\
+    Precision (PCL) & 0.5982 & About 59.8\% of predicted positives are truly PCL. \\
+    Recall (PCL) & 0.6734 & About 67.3\% of true PCL examples are recovered. \\
+    F1 (PCL) & 0.6336 & Main coursework metric balancing PCL precision and recall. \\
+    Accuracy & 0.9260 & High overall accuracy, but less informative under class imbalance. \\
+    Specificity (TNR) & 0.9525 & Very strong true-negative rate on the majority class. \\
+    False Positive Rate & 0.0475 & Roughly 4.8\% of negatives are incorrectly flagged positive. \\
+    False Negative Rate & 0.3266 & Roughly 32.7\% of positives are still being missed. \\
+    Negative Predictive Value & 0.9652 & Predicted negatives are very reliable in this setup. \\
+    Balanced Accuracy & 0.8129 & Mean of TPR and TNR; more stable under class imbalance. \\
+    AUPRC & 0.6472 & Threshold-free ranking quality for the positive class. \\
     \bottomrule
-  \end{tabular}
-  \caption{Confusion matrix on official dev for the final ensemble.}
-  \label{tab:error_confusion_dev}
+  \end{tabularx}
+  \caption{Quantitative error-analysis dashboard for the final ensemble on official dev.}
+  \label{tab:error_metric_dashboard_dev}
 \end{table}
 
-\textbf{What the error profile shows:}
-The model is strong at ruling out negatives (TN \(=1805\)) but still misses a meaningful number of positives (FN \(=65\)). This produces precision \(=0.5982\), recall \(=0.6734\), and positive-class F1 \(=0.6336\). In other words, performance is now above baseline, but the main remaining ceiling is recovering subtle positives without creating too many additional false positives.
+\textbf{Interpretation of Table \ref{tab:error_metric_dashboard_dev}:}
+At the chosen threshold \(0.2500\), the model reaches precision \(0.5982\), recall \(0.6734\), and F1 \(0.6336\), with a strong negative-class profile (specificity \(0.9525\), FPR \(0.0475\), NPV \(0.9652\)). The false-negative rate is \(0.3266\), so the main remaining limitation is still under-detection of subtle PCL.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.66\linewidth]{figures/error_precision_recall_curve_dev.png}
+  \caption{Precision-recall curve of the final ensemble on dev. The area under the PR curve is \(0.6472\), indicating stronger-than-baseline ranking of positives across thresholds.}
+  \label{fig:error_pr_curve_dev}
+\end{figure}
+
+\textbf{Interpretation of Figure \ref{fig:error_pr_curve_dev}:}
+The AUPRC is \(0.6472\), which supports that the ensemble probability ranking is useful beyond one fixed operating point. This aligns with the observed threshold behaviour: the retuned threshold \(0.25\) increases positive recovery while preserving acceptable precision.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.74\linewidth]{figures/error_multiseed_comparison_dev.png}
+  \caption{Multi-seed comparison for the selected runs and ensemble variants on dev. The final retuned ensemble outperforms every single run, showing the value of aggregation plus threshold recalibration.}
+  \label{fig:error_multiseed_comparison_dev}
+\end{figure}
+
+\textbf{Interpretation of Figure \ref{fig:error_multiseed_comparison_dev}:}
+The strongest single run reaches \(0.6146\) F1, while the final retuned ensemble reaches \(0.6336\), showing that ensembling plus threshold recalibration improves over all individual checkpoints rather than only matching the best seed.
+
+\textbf{What the overall error profile shows:}
+Across all views (confusion matrix, metric dashboard, PR curve, and seed comparison), the model is clearly above baseline and robust across runs, but its main residual limitation is still under-detection of subtle or implicit PCL cues.
 
 \begin{table}[H]
   \centering
@@ -423,6 +469,8 @@ The model is strong at ruling out negatives (TN \(=1805\)) but still misses a me
 
 \textbf{Error-analysis insight for model development:}
 The remaining errors are not random. They cluster around (i) lexical trigger overfiring in non-condescending aid narratives and (ii) under-detection of implicit, one-cue condescension. This explains why thresholding and class balancing helped, but also why further gains likely require better contextual disambiguation (especially for authority-style and other implicit PCL cues) rather than only more aggressive threshold shifts.
+
+\subsubsection{Ablation study (2.5 marks):}
 
 \newpage
 \begin{thebibliography}{9}
