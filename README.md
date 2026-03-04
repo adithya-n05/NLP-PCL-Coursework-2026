@@ -26,7 +26,6 @@ These linked weight files are the exact selected members whose probabilities wer
 - RoBERTa-base (seed 42): [BestModel/model_weights/roberta-base__seed_42/model.safetensors](BestModel/model_weights/roberta-base__seed_42/model.safetensors)
 
 ### EDA, baseline, evaluation artifacts
-- EDA notebook: [eda/appendix_b_full_eda.ipynb](eda/appendix_b_full_eda.ipynb)
 - Baseline Python file: [baseline/baseline_roberta_official.py](baseline/baseline_roberta_official.py)
 - Error-analysis/evaluation artifacts: [evaluation/](evaluation/)
   - Full dev error dataset: [evaluation/dev_error_analysis_dataset.csv](evaluation/dev_error_analysis_dataset.csv)
@@ -38,10 +37,8 @@ These linked weight files are the exact selected members whose probabilities wer
   - Sample false positives: [evaluation/dev_error_samples_fp.csv](evaluation/dev_error_samples_fp.csv)
 
 ### Spec, report, and notes
-- Coursework spec: [literature/60035_1_spec.pdf](literature/60035_1_spec.pdf)
 - Coursework report (PDF): [report/Adithya_Narayanan_NLP_Coursework_2026.pdf](report/Adithya_Narayanan_NLP_Coursework_2026.pdf)
 - Coursework report source (LaTeX): [report/Adithya Narayanan, Natural Language Processing Coursework, 2026.tex](<report/Adithya Narayanan, Natural Language Processing Coursework, 2026.tex>)
-- Coursework notes log: [.notes.md](.notes.md)
 
 ## Repository Structure (Tree)
 
