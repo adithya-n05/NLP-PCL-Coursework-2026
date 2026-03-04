@@ -32,11 +32,9 @@ This repository contains the full submission for COMP60035 Natural Language Proc
   - Sample false negatives: [evaluation/dev_error_samples_fn.csv](evaluation/dev_error_samples_fn.csv)
   - Sample false positives: [evaluation/dev_error_samples_fp.csv](evaluation/dev_error_samples_fp.csv)
 
-### Spec, report, and notes
-- Coursework spec: [literature/60035_1_spec.pdf](literature/60035_1_spec.pdf)
+### Report and source
 - Coursework report (PDF): [report/Adithya_Narayanan_NLP_Coursework_2026.pdf](report/Adithya_Narayanan_NLP_Coursework_2026.pdf)
 - Coursework report source (LaTeX): [report/Adithya Narayanan, Natural Language Processing Coursework, 2026.tex](<report/Adithya Narayanan, Natural Language Processing Coursework, 2026.tex>)
-- Coursework notes log: [.notes.md](.notes.md)
 
 ## Repository Structure (Tree)
 
