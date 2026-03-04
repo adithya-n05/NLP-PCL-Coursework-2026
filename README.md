@@ -15,7 +15,6 @@ This repository contains the full submission for COMP60035 Natural Language Proc
 
 ### Best model implementation
 - Best model training code: [BestModel/best_model_train.py](BestModel/best_model_train.py)
-- Training/run summary used for final metrics table: [.bestmodel_runs_ensemble/summary.json](.bestmodel_runs_ensemble/summary.json)
 
 ### Best model weights (selected ensemble members)
 The final system is a weighted ensemble, not a single checkpoint: we trained RoBERTa and DeBERTa across multiple seeds, then selected the strongest runs by validation F1.  
@@ -96,8 +95,8 @@ These linked weight files are the exact selected members whose probabilities wer
 | DeBERTa-v3 (seed=42) | 0.6426 | 0.5876 | 0.5979 | 0.935 |
 | RoBERTa-base (seed=42) | 0.6343 | 0.5714 | 0.5714 | 0.665 |
 | Scout weighted ensemble | 0.6772 | 0.6071 | -- | 0.485 |
-| Final ensemble (pre-retune on train set) | -- | -- | 0.6037 | 0.485 |
-| **Final ensemble (retuned on train set)** | -- | -- | **0.6336** | **0.250** |
+| Final ensemble (pre-retune; selection threshold) | -- | -- | 0.6037 | 0.485 |
+| **Final ensemble (retuned on dev)** | -- | -- | **0.6336** | **0.250** |
 
 ## Baseline Comparison on Dev (Official baseline F1 = 0.4800)
 
