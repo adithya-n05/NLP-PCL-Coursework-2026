@@ -1,0 +1,55 @@
+{
+  "threshold": 0.2499999999999999,
+  "metrics": {
+    "tn": 1805,
+    "fp": 90,
+    "fn": 65,
+    "tp": 134,
+    "precision": 0.5982142857142857,
+    "recall": 0.6733668341708543,
+    "f1": 0.6335697399527187,
+    "accuracy": 0.9259789875835721,
+    "specificity": 0.9525065963060686,
+    "false_positive_rate": 0.047493403693931395,
+    "false_negative_rate": 0.32663316582914576,
+    "negative_predictive_value": 0.9652406417112299,
+    "balanced_accuracy": 0.8129367152384614,
+    "auprc": 0.647211160991473
+  },
+  "selected_runs": [
+    {
+      "model_name": "microsoft/deberta-v3-base",
+      "seed": 1337,
+      "weight": 0.25858879386339345,
+      "weight_dir": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/BestModel/model_weights/microsoft_deberta-v3-base__seed_1337",
+      "final_dev_f1": 0.6075949367088608
+    },
+    {
+      "model_name": "microsoft/deberta-v3-base",
+      "seed": 627345,
+      "weight": 0.25701542464254185,
+      "weight_dir": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/BestModel/model_weights/microsoft_deberta-v3-base__seed_627345",
+      "final_dev_f1": 0.6145552560646901
+    },
+    {
+      "model_name": "microsoft/deberta-v3-base",
+      "seed": 42,
+      "weight": 0.24377572716883716,
+      "weight_dir": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/BestModel/model_weights/microsoft_deberta-v3-base__seed_42",
+      "final_dev_f1": 0.5978835978835979
+    },
+    {
+      "model_name": "roberta-base",
+      "seed": 42,
+      "weight": 0.24062005432522762,
+      "weight_dir": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/BestModel/model_weights/roberta-base__seed_42",
+      "final_dev_f1": 0.5714285714285714
+    }
+  ],
+  "output_files": {
+    "confusion_matrix_png": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/report/figures/error_confusion_matrix_dev.png",
+    "precision_recall_curve_png": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/report/figures/error_precision_recall_curve_dev.png",
+    "multiseed_comparison_png": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/report/figures/error_multiseed_comparison_dev.png",
+    "metrics_csv": "/home/adithya_narayanan/Dropbox/Documents/University/Year 3/Computing/COMP60035 Natural Language Processing/Coursework/report/figures/error_metrics_summary_dev.csv"
+  }
+}
