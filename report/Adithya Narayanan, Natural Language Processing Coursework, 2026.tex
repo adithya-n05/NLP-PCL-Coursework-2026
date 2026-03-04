@@ -277,7 +277,7 @@ This EDA shapes both architecture settings and training protocol. We should trea
 
 \newpage
 \section{Describe your proposed approach (4 marks):}
-Prior to model development, we first verified that the official baseline setup reproduced the expected weak baseline scores (approximately 0.48 F1 on dev and 0.49 F1 on test). We then built our final approach on top of that baseline.
+Prior to model development, we verified that our baseline reproduction yields a weak dev score close to the official baseline (dev F1 \(=0.4929\) vs 0.48 reported by organisers). The official test baseline (0.49) is reported by the organisers because test labels are hidden. We then built our final approach on top of that baseline.
 \subsection{Proposed approach (2 marks):}
 The core strategy is to build a multi-architecture ensemble: keep RoBERTa-base as the baseline foundation and add DeBERTa-v3-base as a complementary encoder. We chose DeBERTa-v3 because it gives a different representation style from RoBERTa on subtle linguistic cues, which helps reduce correlated errors when the two models are ensembled, whilst being of comparable performance to RoBERTa. On top of this, we improved reliability through imbalance-aware training, multi-seed training, and calibrated ensembling. We detail all key baseline changes below.
 
@@ -445,7 +445,7 @@ To make the improvement over baseline concrete at sample level, we compared base
 \end{table}
 
 \textbf{Interpretation of Table \ref{tab:baseline_final_overlap_dev}:}
-The final system changes 203 decisions relative to baseline (\(9.69\%\) of dev), and most of those changes are beneficial: 167 fixes versus 36 regressions (82.3\% beneficial among changed decisions), for a net gain of 131 correctly classified examples. The metric-level shift is consistent with this pattern: baseline TP/FP/FN \(=\) 139/226/60 (F1 \(=0.4929\)), whereas final TP/FP/FN \(=\) 134/90/65 (F1 \(=0.6336\)). In other words, the final system gives up a small amount of recall (\(-5\) TP) to remove a large number of false alarms (\(-136\) FP), which is exactly the trade-off that lifts positive-class F1.
+The final system changes 203 decisions relative to baseline (\(9.69\%\) of dev), and most of those changes are beneficial: 167 fixes versus 36 regressions (82.3\% beneficial among changed decisions), for a net gain of 131 correctly classified examples. The metric-level shift is consistent with this pattern: baseline TP/FP/FN \(=\) 139/226/60 (F1 \(=0.4929\)) from our reproduced baseline run on dev, whereas final TP/FP/FN \(=\) 134/90/65 (F1 \(=0.6336\)). In other words, the final system gives up a small amount of recall (\(-5\) TP) to remove a large number of false alarms (\(-136\) FP), which is exactly the trade-off that lifts positive-class F1.
 
 \begin{table}[H]
   \centering
